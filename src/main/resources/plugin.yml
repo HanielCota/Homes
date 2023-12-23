@@ -1,0 +1,4 @@
+name: Homes
+version: '${version}'
+main: com.github.hanielcota.homes.HomesPlugin
+api-version: '1.20'
