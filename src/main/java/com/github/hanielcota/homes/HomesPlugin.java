@@ -49,7 +49,7 @@ public final class HomesPlugin extends JavaPlugin {
     private void setupCommands() {
         PaperCommandManager commandManager = new PaperCommandManager(this);
         commandManager.registerCommand(new HomeCommand(homeController));
-        commandManager.registerCommand(new SetHomeCommand(homeController));
+        commandManager.registerCommand(new SetHomeCommand(homeController, this));
         commandManager.registerCommand(new HomesCommand(homeController, homesMenu));
     }
 }

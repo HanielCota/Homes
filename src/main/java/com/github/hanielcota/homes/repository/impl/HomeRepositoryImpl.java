@@ -97,6 +97,25 @@ public class HomeRepositoryImpl implements HomeRepository {
     }
 
     @Override
+    public boolean isHomeNameTaken(String playerName, String homeName) {
+        String query = "SELECT 1 FROM homes WHERE playerName = ? AND homeName = ? LIMIT 1";
+        try (Connection connection = HikariCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, playerName);
+            preparedStatement.setString(2, homeName);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            log.error("Error checking if home name is taken for playerName: {} and homeName: {}", playerName, homeName, e);
+        }
+        return true;
+    }
+
+
+    @Override
     public List<Home> getAllHomes(String playerName) {
         String cacheKey = buildCacheKey(playerName, "all");
         List<Home> cachedHomes = allHomesCache.getIfPresent(cacheKey);
@@ -143,6 +162,29 @@ public class HomeRepositoryImpl implements HomeRepository {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public void deleteHome(String playerName, String homeName) {
+        String query = "DELETE FROM homes WHERE playerName = ? AND homeName = ?";
+        String cacheKey = buildCacheKey(playerName, homeName);
+
+        try (Connection connection = HikariCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, playerName);
+            preparedStatement.setString(2, homeName);
+            preparedStatement.executeUpdate();
+
+            log.info("Home deleted successfully: {}", cacheKey);
+
+            homeCache.invalidate(cacheKey);
+            allHomesCache.invalidate(buildCacheKey(playerName, "all"));
+
+        } catch (SQLException e) {
+            log.error("Failed to delete home with playerName: {} and homeName: {}", playerName, homeName, e);
+        }
+    }
+
 
     private String buildCacheKey(String playerName, String homeName) {
         return playerName + ":" + homeName;

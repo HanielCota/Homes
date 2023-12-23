@@ -39,9 +39,21 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
     }
 
     private void setHomeItem(Player player, int slot, Home home) {
-        setItem(slot, MenuItemFactory.createHomeItem(home), click -> plugin.getHomeController()
-                .teleportToHome(player, home));
+        setItem(slot, MenuItemFactory.createHomeItem(home), click -> {
+            if (click.isShiftClick()) {
+                plugin.getHomeController().deleteHome(player.getName(), home.getHomeName());
+                player.sendMessage("§aHome '" + home.getHomeName() + "' deleted.");
+
+                getInventory().clear(slot);
+
+                showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
+                return;
+            }
+
+            plugin.getHomeController().teleportToHome(player, home);
+        });
     }
+
 
     private void setBackItem(Player player) {
         int backSlot = 45;

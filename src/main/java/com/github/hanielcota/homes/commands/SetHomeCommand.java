@@ -3,6 +3,7 @@ package com.github.hanielcota.homes.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import com.github.hanielcota.homes.HomesPlugin;
 import com.github.hanielcota.homes.controller.HomeController;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 public class SetHomeCommand extends BaseCommand {
 
     private final HomeController homeController;
+    private final HomesPlugin plugin;
 
     @Default
     public void onCommand(Player player, String[] args) {
@@ -23,6 +25,11 @@ public class SetHomeCommand extends BaseCommand {
         String homeName = args[0];
         if (homeName == null || homeName.isEmpty()) {
             player.sendMessage("§cNome da home inválido(a).");
+            return;
+        }
+
+        if (plugin.getHomeRepository().isHomeNameTaken(player.getName(), homeName)) {
+            player.sendMessage("§cJá existe uma home com o nome '" + homeName + "'. Escolha outro nome.");
             return;
         }
 

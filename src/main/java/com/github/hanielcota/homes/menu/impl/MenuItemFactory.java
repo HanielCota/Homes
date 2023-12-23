@@ -13,7 +13,10 @@ public class MenuItemFactory {
     public static ItemStack createHomeItem(Home home) {
         return new ItemBuilder(Material.BLACK_BED)
                 .setName("§a" + home.getHomeName())
-                .setLore("§7Clique para se teleportar para esta home.")
+                .setLore(
+                        "§7Clique para se teleportar para esta home.",
+                        "",
+                        "§7Clique com Shift e botão direito para deletar a home.")
                 .build();
     }
 
@@ -24,9 +27,7 @@ public class MenuItemFactory {
     public static ItemStack createOrderItem() {
         return new ItemBuilder(Material.HOPPER)
                 .setName("§aOrganizar")
-                .setLore(
-                        "§7Clique para organizar alfabeticamente",
-                        "§7os nomes das homes de A a Z.")
+                .setLore("§7Clique para organizar alfabeticamente", "§7os nomes das homes de A a Z.")
                 .build();
     }
 

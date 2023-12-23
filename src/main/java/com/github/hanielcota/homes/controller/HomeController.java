@@ -27,6 +27,10 @@ public class HomeController {
         return homeService.getAllHomes(playerName);
     }
 
+    public void deleteHome(String playerName, String homeName) {
+        homeService.deleteHome(playerName, homeName);
+    }
+
     public void teleportToHome(Player player, Home home) {
         if (home == null) {
             player.sendMessage("§cHome não encontrada.");
@@ -49,5 +53,6 @@ public class HomeController {
 
         player.teleportAsync(homeLocation);
     }
+
 
 }

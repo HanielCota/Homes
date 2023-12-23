@@ -10,4 +10,9 @@ public interface HomeRepository {
     Home getHome(String playerName, String homeName);
 
     List<Home> getAllHomes(String playerName);
+
+    void deleteHome(String playerName, String homeName);
+
+    boolean isHomeNameTaken(String playerName, String homeName);
+
 }
