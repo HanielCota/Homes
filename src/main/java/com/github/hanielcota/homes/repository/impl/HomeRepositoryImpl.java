@@ -17,13 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class HomeRepositoryImpl implements HomeRepository {
-
-    private static final String PLAYER_NAME = "playerName";
-    private static final String HOME_NAME = "homeName";
-    private static final String WORLD_NAME = "worldName";
-    private static final String PITCH = "pitch";
-    private static final String IS_PUBLIC = "isPublic";
-
     private final Cache<String, Home> homeCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
@@ -32,8 +25,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void saveHome(Home home) {
-        final String query = "INSERT INTO homes (" + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME
-                + ", x, y, z, yaw, " + PITCH + ", " + IS_PUBLIC + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final String query =
+                "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -66,8 +59,8 @@ public class HomeRepositoryImpl implements HomeRepository {
             return cachedHome;
         }
 
-        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
-                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
+        final String query =
+                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ? AND homeName = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -81,15 +74,15 @@ public class HomeRepositoryImpl implements HomeRepository {
                 }
 
                 Home home = new Home(
-                        resultSet.getString(PLAYER_NAME),
-                        resultSet.getString(HOME_NAME),
-                        resultSet.getString(WORLD_NAME),
+                        resultSet.getString("playerName"),
+                        resultSet.getString("homeName"),
+                        resultSet.getString("worldName"),
                         resultSet.getDouble("x"),
                         resultSet.getDouble("y"),
                         resultSet.getDouble("z"),
                         resultSet.getDouble("yaw"),
-                        resultSet.getDouble(PITCH),
-                        resultSet.getBoolean(IS_PUBLIC));
+                        resultSet.getDouble("pitch"),
+                        resultSet.getBoolean("isPublic"));
 
                 log.info("Retrieved home from database: {}", home);
 
@@ -105,7 +98,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public boolean isHomeNameTaken(String playerName, String homeName) {
-        final String query = "SELECT 1 FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ? LIMIT 1";
+        final String query = "SELECT 1 FROM homes WHERE playerName = ? AND homeName = ? LIMIT 1";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -142,8 +135,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     private List<Home> getAllHomesFromDatabase(String playerName) {
         List<Home> homes = new ArrayList<>();
-        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
-                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ?";
+        final String query =
+                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -152,15 +145,15 @@ public class HomeRepositoryImpl implements HomeRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Home home = new Home(
-                            resultSet.getString(PLAYER_NAME),
-                            resultSet.getString(HOME_NAME),
-                            resultSet.getString(WORLD_NAME),
+                            resultSet.getString("playerName"),
+                            resultSet.getString("homeName"),
+                            resultSet.getString("worldName"),
                             resultSet.getDouble("x"),
                             resultSet.getDouble("y"),
                             resultSet.getDouble("z"),
                             resultSet.getDouble("yaw"),
-                            resultSet.getDouble(PITCH),
-                            resultSet.getBoolean(IS_PUBLIC));
+                            resultSet.getDouble("pitch"),
+                            resultSet.getBoolean("isPublic"));
 
                     homes.add(home);
                     log.info("Retrieved home: {}", home);
@@ -192,8 +185,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     private List<Home> getPublicHomesFromDatabase(String playerName) {
         List<Home> publicHomes = new ArrayList<>();
-        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
-                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ? AND " + IS_PUBLIC + " = 1";
+        final String query =
+                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ? AND isPublic = 1";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -202,15 +195,15 @@ public class HomeRepositoryImpl implements HomeRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Home home = new Home(
-                            resultSet.getString(PLAYER_NAME),
-                            resultSet.getString(HOME_NAME),
-                            resultSet.getString(WORLD_NAME),
+                            resultSet.getString("playerName"),
+                            resultSet.getString("homeName"),
+                            resultSet.getString("worldName"),
                             resultSet.getDouble("x"),
                             resultSet.getDouble("y"),
                             resultSet.getDouble("z"),
                             resultSet.getDouble("yaw"),
-                            resultSet.getDouble(PITCH),
-                            resultSet.getBoolean(IS_PUBLIC));
+                            resultSet.getDouble("pitch"),
+                            resultSet.getBoolean("isPublic"));
 
                     publicHomes.add(home);
                     log.info("Retrieved public home: {}", home);
@@ -227,8 +220,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void setHomeVisibility(String playerName, String homeName, boolean isPublic) {
-        final String query =
-                "UPDATE homes SET " + IS_PUBLIC + " = ? WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
+        final String query = "UPDATE homes SET isPublic = ? WHERE playerName = ? AND homeName = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -258,7 +250,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void deleteHome(String playerName, String homeName) {
-        final String query = "DELETE FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
+        final String query = "DELETE FROM homes WHERE playerName = ? AND homeName = ?";
         String cacheKey = buildCacheKey(playerName, homeName);
 
         try (Connection connection = HikariCPDataSource.getConnection();
