@@ -17,6 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class HomeRepositoryImpl implements HomeRepository {
+
+    private static final String PLAYER_NAME = "playerName";
+    private static final String HOME_NAME = "homeName";
+    private static final String WORLD_NAME = "worldName";
+    private static final String PITCH = "pitch";
+    private static final String IS_PUBLIC = "isPublic";
+
     private final Cache<String, Home> homeCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
@@ -25,8 +32,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void saveHome(Home home) {
-        final String query =
-                "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final String query = "INSERT INTO homes (" + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, "
+                + PITCH + ", " + IS_PUBLIC + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -59,8 +66,8 @@ public class HomeRepositoryImpl implements HomeRepository {
             return cachedHome;
         }
 
-        final String query =
-                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ? AND homeName = ?";
+        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
+                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -74,15 +81,15 @@ public class HomeRepositoryImpl implements HomeRepository {
                 }
 
                 Home home = new Home(
-                        resultSet.getString("playerName"),
-                        resultSet.getString("homeName"),
-                        resultSet.getString("worldName"),
+                        resultSet.getString(PLAYER_NAME),
+                        resultSet.getString(HOME_NAME),
+                        resultSet.getString(WORLD_NAME),
                         resultSet.getDouble("x"),
                         resultSet.getDouble("y"),
                         resultSet.getDouble("z"),
                         resultSet.getDouble("yaw"),
-                        resultSet.getDouble("pitch"),
-                        resultSet.getBoolean("isPublic"));
+                        resultSet.getDouble(PITCH),
+                        resultSet.getBoolean(IS_PUBLIC));
 
                 log.info("Retrieved home from database: {}", home);
 
