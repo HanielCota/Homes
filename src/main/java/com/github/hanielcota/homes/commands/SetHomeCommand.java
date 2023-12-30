@@ -42,7 +42,7 @@ public class SetHomeCommand extends BaseCommand {
         double yaw = player.getLocation().getYaw();
         double pitch = player.getLocation().getPitch();
 
-        homeController.createHome(player.getName(), homeName, worldName, x, y, z, yaw, pitch);
+        homeController.createHome(player.getName(), homeName, worldName, x, y, z, yaw, pitch, false);
 
         player.sendMessage("§aHome setada com sucesso!");
     }

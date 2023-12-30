@@ -20,7 +20,7 @@ public class CreateHomeTable {
                 return;
             }
 
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS homes ("
+            final String createTableSQL = "CREATE TABLE IF NOT EXISTS homes ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY,"
                     + "playerName VARCHAR(50) NOT NULL,"
                     + "homeName VARCHAR(50) NOT NULL,"
@@ -29,7 +29,8 @@ public class CreateHomeTable {
                     + "y DOUBLE NOT NULL,"
                     + "z DOUBLE NOT NULL,"
                     + "yaw DOUBLE NOT NULL,"
-                    + "pitch DOUBLE NOT NULL"
+                    + "pitch DOUBLE NOT NULL,"
+                    + "isPublic BOOLEAN NOT NULL DEFAULT FALSE"
                     + ")";
 
             statement.executeUpdate(createTableSQL);

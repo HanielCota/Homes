@@ -15,8 +15,17 @@ public class HomeController {
 
     private final HomeService homeService;
 
-    public void createHome(String playerName, String homeName, String worldName, double x, double y, double z, double yaw, double pitch) {
-        homeService.createHome(playerName, homeName, worldName, x, y, z, yaw, pitch);
+    public void createHome(
+            String playerName,
+            String homeName,
+            String worldName,
+            double x,
+            double y,
+            double z,
+            double yaw,
+            double pitch,
+            boolean isPublic) {
+        homeService.createHome(playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic);
     }
 
     public Home getHome(String playerName, String homeName) {
@@ -29,6 +38,18 @@ public class HomeController {
 
     public void deleteHome(String playerName, String homeName) {
         homeService.deleteHome(playerName, homeName);
+    }
+
+    public List<Home> getPublicHomes(String playerName) {
+        return homeService.getPublicHomes(playerName);
+    }
+
+    public void setHomeVisibility(String playerName, String homeName, boolean isPublic) {
+        homeService.setHomeVisibility(playerName, homeName, isPublic);
+    }
+
+    public boolean isHomeNameTaken(String playerName, String homeName) {
+        return homeService.isHomeNameTaken(playerName, homeName);
     }
 
     public void teleportToHome(Player player, Home home) {
@@ -44,15 +65,8 @@ public class HomeController {
         }
 
         Location homeLocation = new Location(
-                bukkitWorld,
-                home.getX(),
-                home.getY(),
-                home.getZ(),
-                (float) home.getYaw(),
-                (float) home.getPitch());
+                bukkitWorld, home.getX(), home.getY(), home.getZ(), (float) home.getYaw(), (float) home.getPitch());
 
         player.teleportAsync(homeLocation);
     }
-
-
 }

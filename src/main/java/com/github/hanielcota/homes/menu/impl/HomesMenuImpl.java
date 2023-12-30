@@ -3,6 +3,7 @@ package com.github.hanielcota.homes.menu.impl;
 import com.github.hanielcota.homes.HomesPlugin;
 import com.github.hanielcota.homes.domain.Home;
 import com.github.hanielcota.homes.menu.HomeMenu;
+import com.github.hanielcota.homes.menu.factory.MenuItemFactory;
 import com.github.hanielcota.homes.utils.FastInv;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -22,10 +23,10 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
     @Override
     public void showHomesMenu(Player player, List<Home> homes) {
         int startingSlot = 10;
-        int slotIncrement = 1;
+        final int slotIncrement = 1;
 
         for (Home home : homes) {
-            setHomeItem(player, startingSlot, home);
+            setItem(startingSlot, player, home);
             startingSlot += (startingSlot == 17 || startingSlot == 26) ? 4 : slotIncrement;
         }
 
@@ -33,20 +34,22 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
         fillEmptySlotsWithBarrier(19, 25);
         fillEmptySlotsWithBarrier(28, 34);
 
-        setOrderItem(player);
-        setBackItem(player);
+        setItem(50, MenuItemFactory.createPublicHomesItem(), click -> showPublicHomes(player));
+        setItem(45, MenuItemFactory.createBackItem(false), click -> player.closeInventory());
+        setItem(49, MenuItemFactory.createOrderItem(), click -> organizeHomesAZ(player));
+
         open(player);
     }
 
-    private void setHomeItem(Player player, int slot, Home home) {
+    private void setItem(int slot, Player player, Home home) {
         setItem(slot, MenuItemFactory.createHomeItem(home), click -> {
+            if (click.isRightClick()) {
+                handlePublicVisibilityChange(player, home);
+                return;
+            }
+
             if (click.isShiftClick()) {
-                plugin.getHomeController().deleteHome(player.getName(), home.getHomeName());
-                player.sendMessage("§aHome '" + home.getHomeName() + "' deleted.");
-
-                getInventory().clear(slot);
-
-                showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
+                handleHomeDeletion(player, home, slot);
                 return;
             }
 
@@ -54,30 +57,30 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
         });
     }
 
-
-    private void setBackItem(Player player) {
-        int backSlot = 45;
-        setItem(backSlot, MenuItemFactory.createBackItem(), click -> player.closeInventory());
+    private void handlePublicVisibilityChange(Player player, Home home) {
+        boolean newVisibility = !home.isPublic();
+        plugin.getHomeController().setHomeVisibility(player.getName(), home.getHomeName(), newVisibility);
+        player.sendMessage(
+                "§aHome '" + home.getHomeName() + "' agora é " + (newVisibility ? "pública" : "privada") + ".");
+        showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
     }
 
-    private void setOrderItem(Player player) {
-        setItem(49, MenuItemFactory.createOrderItem(), click -> organizeHomesAZ(player));
+    private void handleHomeDeletion(Player player, Home home, int slot) {
+        plugin.getHomeController().deleteHome(player.getName(), home.getHomeName());
+        player.sendMessage("§cHome '" + home.getHomeName() + "' deletada.");
+        getInventory().clear(slot);
+        showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
     }
 
-    public void organizeHomesAZ(Player player) {
+    private void showPublicHomes(Player player) {
+        List<Home> publicHomes = plugin.getHomeController().getPublicHomes(player.getName());
+        new PublicHomesMenuImpl(player, publicHomes, plugin).open(player);
+    }
+
+    private void organizeHomesAZ(Player player) {
         List<Home> homes = plugin.getHomeRepository().getAllHomes(player.getName());
-
         homes.sort(Comparator.comparing(Home::getHomeName));
-
         showHomesMenu(player, homes);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10f, 10f);
-    }
-
-    private void fillEmptySlotsWithBarrier(int startSlot, int endSlot) {
-        for (int emptySlot = startSlot; emptySlot <= endSlot; emptySlot++) {
-            if (getInventory().getItem(emptySlot) == null) {
-                setItem(emptySlot, MenuItemFactory.createBarrierItem());
-            }
-        }
     }
 }

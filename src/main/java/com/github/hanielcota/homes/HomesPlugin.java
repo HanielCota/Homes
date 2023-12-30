@@ -3,6 +3,7 @@ package com.github.hanielcota.homes;
 import co.aikar.commands.PaperCommandManager;
 import com.github.hanielcota.homes.commands.HomeCommand;
 import com.github.hanielcota.homes.commands.HomesCommand;
+import com.github.hanielcota.homes.commands.PublicHomesCommand;
 import com.github.hanielcota.homes.commands.SetHomeCommand;
 import com.github.hanielcota.homes.controller.HomeController;
 import com.github.hanielcota.homes.infra.CreateHomeTable;
@@ -45,11 +46,11 @@ public final class HomesPlugin extends JavaPlugin {
         FastInvManager.register(this);
     }
 
-
     private void setupCommands() {
         PaperCommandManager commandManager = new PaperCommandManager(this);
         commandManager.registerCommand(new HomeCommand(homeController));
         commandManager.registerCommand(new SetHomeCommand(homeController, this));
         commandManager.registerCommand(new HomesCommand(homeController, homesMenu));
+        commandManager.registerCommand(new PublicHomesCommand(this));
     }
 }

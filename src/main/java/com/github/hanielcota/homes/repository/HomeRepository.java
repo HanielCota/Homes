@@ -15,4 +15,7 @@ public interface HomeRepository {
 
     boolean isHomeNameTaken(String playerName, String homeName);
 
+    List<Home> getPublicHomes(String playerName);
+
+    void setHomeVisibility(String playerName, String homeName, boolean isPublic);
 }
