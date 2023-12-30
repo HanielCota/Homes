@@ -1,5 +1,7 @@
 package com.github.hanielcota.homes.infra;
 
+import com.github.hanielcota.homes.infra.exception.DataSourceInitializationException;
+import com.github.hanielcota.homes.infra.exception.DataSourceNotInitializedException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
@@ -21,14 +23,14 @@ public class HikariCPDataSource {
             dataSource = new HikariDataSource(config);
         } catch (Exception e) {
             log.error("Failed to initialize HikariCPDataSource", e);
-            throw new RuntimeException("Failed to initialize HikariCPDataSource", e);
+            throw new DataSourceInitializationException("Failed to initialize HikariCPDataSource", e);
         }
     }
 
     public static Connection getConnection() throws SQLException {
         if (dataSource == null) {
             log.error("DataSource is null. Unable to get connection.");
-            throw new SQLException("DataSource is null. Unable to get connection.");
+            throw new DataSourceNotInitializedException("DataSource is null. Unable to get connection.");
         }
         return dataSource.getConnection();
     }
