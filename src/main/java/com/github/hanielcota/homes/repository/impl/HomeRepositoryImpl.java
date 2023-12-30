@@ -32,8 +32,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void saveHome(Home home) {
-        final String query = "INSERT INTO homes (" + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, "
-                + PITCH + ", " + IS_PUBLIC + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final String query = "INSERT INTO homes (" + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME
+                + ", x, y, z, yaw, " + PITCH + ", " + IS_PUBLIC + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -105,7 +105,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public boolean isHomeNameTaken(String playerName, String homeName) {
-        final String query = "SELECT 1 FROM homes WHERE playerName = ? AND homeName = ? LIMIT 1";
+        final String query = "SELECT 1 FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ? LIMIT 1";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -142,8 +142,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     private List<Home> getAllHomesFromDatabase(String playerName) {
         List<Home> homes = new ArrayList<>();
-        final String query =
-                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ?";
+        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
+                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -152,15 +152,15 @@ public class HomeRepositoryImpl implements HomeRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Home home = new Home(
-                            resultSet.getString("playerName"),
-                            resultSet.getString("homeName"),
-                            resultSet.getString("worldName"),
+                            resultSet.getString(PLAYER_NAME),
+                            resultSet.getString(HOME_NAME),
+                            resultSet.getString(WORLD_NAME),
                             resultSet.getDouble("x"),
                             resultSet.getDouble("y"),
                             resultSet.getDouble("z"),
                             resultSet.getDouble("yaw"),
-                            resultSet.getDouble("pitch"),
-                            resultSet.getBoolean("isPublic"));
+                            resultSet.getDouble(PITCH),
+                            resultSet.getBoolean(IS_PUBLIC));
 
                     homes.add(home);
                     log.info("Retrieved home: {}", home);
@@ -192,8 +192,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     private List<Home> getPublicHomesFromDatabase(String playerName) {
         List<Home> publicHomes = new ArrayList<>();
-        final String query =
-                "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic FROM homes WHERE playerName = ? AND isPublic = 1";
+        final String query = "SELECT " + PLAYER_NAME + ", " + HOME_NAME + ", " + WORLD_NAME + ", x, y, z, yaw, " + PITCH
+                + ", " + IS_PUBLIC + " FROM homes WHERE " + PLAYER_NAME + " = ? AND " + IS_PUBLIC + " = 1";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -202,15 +202,15 @@ public class HomeRepositoryImpl implements HomeRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Home home = new Home(
-                            resultSet.getString("playerName"),
-                            resultSet.getString("homeName"),
-                            resultSet.getString("worldName"),
+                            resultSet.getString(PLAYER_NAME),
+                            resultSet.getString(HOME_NAME),
+                            resultSet.getString(WORLD_NAME),
                             resultSet.getDouble("x"),
                             resultSet.getDouble("y"),
                             resultSet.getDouble("z"),
                             resultSet.getDouble("yaw"),
-                            resultSet.getDouble("pitch"),
-                            resultSet.getBoolean("isPublic"));
+                            resultSet.getDouble(PITCH),
+                            resultSet.getBoolean(IS_PUBLIC));
 
                     publicHomes.add(home);
                     log.info("Retrieved public home: {}", home);
@@ -227,7 +227,8 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void setHomeVisibility(String playerName, String homeName, boolean isPublic) {
-        final String query = "UPDATE homes SET isPublic = ? WHERE playerName = ? AND homeName = ?";
+        final String query =
+                "UPDATE homes SET " + IS_PUBLIC + " = ? WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -257,7 +258,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void deleteHome(String playerName, String homeName) {
-        final String query = "DELETE FROM homes WHERE playerName = ? AND homeName = ?";
+        final String query = "DELETE FROM homes WHERE " + PLAYER_NAME + " = ? AND " + HOME_NAME + " = ?";
         String cacheKey = buildCacheKey(playerName, homeName);
 
         try (Connection connection = HikariCPDataSource.getConnection();
