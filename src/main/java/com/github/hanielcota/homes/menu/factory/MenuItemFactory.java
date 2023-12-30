@@ -62,6 +62,7 @@ public class MenuItemFactory {
                         "§7Clique para obter informações sobre como",
                         "§7definir uma home como pública.",
                         "",
+                        "§aResumo de como tornar pública:",
                         "§7Para tornar uma home pública,",
                         "§7clique com o botão direito.",
                         "§7Isso a tornará visível para outros jogadores.")
