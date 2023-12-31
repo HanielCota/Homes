@@ -28,6 +28,5 @@ public class HomesCommand extends BaseCommand {
         }
 
         homesMenu.showHomesMenu(player, homes);
-        player.sendMessage("§aMenu de homes aberto!");
     }
 }

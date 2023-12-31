@@ -65,7 +65,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder(ItemBuilder other) {
-        this.itemStack = other.itemStack.clone();
+        itemStack = other.itemStack.clone();
     }
 
     public ItemBuilder setDurability(short durability) {
@@ -80,9 +80,7 @@ public class ItemBuilder {
 
     public ItemBuilder setPotion(PotionEffectType type, int duration, int amplifier) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof PotionMeta potionMeta)) {
-            return this;
-        }
+        if (!(itemMeta instanceof PotionMeta potionMeta)) return this;
 
         potionMeta.addCustomEffect(new PotionEffect(type, duration, amplifier), true);
         itemStack.setItemMeta(potionMeta);
@@ -100,9 +98,7 @@ public class ItemBuilder {
 
     public ItemBuilder modifyName(String text, String replace) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) {
-            return this;
-        }
+        if (itemMeta == null) return this;
 
         String displayName = itemMeta.getDisplayName();
         displayName = displayName.replace(text, replace);
@@ -125,9 +121,7 @@ public class ItemBuilder {
 
     public ItemBuilder setSkullOwner(String owner) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof SkullMeta skullMeta)) {
-            return this;
-        }
+        if (!(itemMeta instanceof SkullMeta skullMeta)) return this;
 
         skullMeta.setOwner(owner);
         itemStack.setItemMeta(skullMeta);
@@ -251,14 +245,10 @@ public class ItemBuilder {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         // Create a new ItemMeta if it is null
-        if (itemMeta == null) {
-            itemMeta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
-        }
+        if (itemMeta == null) itemMeta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
 
         List<String> lore = itemMeta.getLore();
-        if (lore == null) {
-            lore = Lists.newArrayList();
-        }
+        if (lore == null) lore = Lists.newArrayList();
         lore.add(string);
         itemMeta.setLore(ImmutableList.copyOf(lore));
         itemStack.setItemMeta(itemMeta);
@@ -268,14 +258,10 @@ public class ItemBuilder {
     public ItemBuilder addLoreLine(String string) {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
-        if (itemMeta == null) {
-            itemMeta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
-        }
+        if (itemMeta == null) itemMeta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
 
         List<String> lore = itemMeta.getLore();
-        if (lore == null) {
-            lore = Lists.newArrayList();
-        }
+        if (lore == null) lore = Lists.newArrayList();
         lore.add(string);
         itemMeta.setLore(ImmutableList.copyOf(lore));
         itemStack.setItemMeta(itemMeta);
@@ -307,9 +293,7 @@ public class ItemBuilder {
 
     public ItemBuilder setLeatherArmorColor(Color color) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof LeatherArmorMeta leatherArmorMeta)) {
-            return this;
-        }
+        if (!(itemMeta instanceof LeatherArmorMeta leatherArmorMeta)) return this;
 
         leatherArmorMeta.setColor(color);
         itemStack.setItemMeta(leatherArmorMeta);
@@ -324,9 +308,7 @@ public class ItemBuilder {
 
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 
-        if (skullMeta == null) {
-            return this;
-        }
+        if (skullMeta == null) return this;
 
         GameProfile profile = cachedProfiles.computeIfAbsent(url, key -> createGameProfile());
         profile.getProperties().put("textures", new Property("textures", url));
@@ -336,7 +318,6 @@ public class ItemBuilder {
             setProfileMethod.setAccessible(true);
             setProfileMethod.invoke(skullMeta, profile);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
             return this;
         }
 
