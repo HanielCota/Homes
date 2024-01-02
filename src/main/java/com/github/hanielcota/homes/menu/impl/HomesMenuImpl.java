@@ -81,6 +81,8 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
         List<Home> homes = plugin.getHomeRepository().getAllHomes(player.getName());
         homes.sort(Comparator.comparing(Home::getHomeName));
         showHomesMenu(player, homes);
+
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10f, 10f);
+        player.sendMessage("§eVocê organizou suas homes em ordem alfabética.");
     }
 }

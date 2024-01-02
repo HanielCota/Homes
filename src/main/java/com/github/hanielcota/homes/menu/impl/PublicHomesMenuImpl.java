@@ -40,13 +40,13 @@ public class PublicHomesMenuImpl extends FastInv {
     private void showInformation(Player player) {
         player.sendMessage(
                 "",
-                "§aPara definir uma home como pública, siga os passos abaixo:",
+                "§aPara tornar uma home pública, siga os passos abaixo:",
                 "",
-                "§7Passo 1: Vá até o menu, escolha a home que deseja tornar pública.",
+                "§7Passo 1: Abra o menu e selecione a home que deseja tornar pública.",
                 "§7Passo 2: Clique com o botão direito na sua home.",
                 "§7Passo 3: Segure a tecla Shift enquanto clica.",
                 "",
-                "§7Isso tornará a home visível para outros jogadores.");
+                "§7Isso fará com que a home seja visível para outros jogadores.");
     }
 
     private void teleportToPublicHome(Player player, Home home) {

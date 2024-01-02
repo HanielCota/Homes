@@ -13,7 +13,6 @@ public class MenuItemFactory {
     public static ItemStack createHomeItem(Home home) {
         String homeName = home.getHomeName();
         boolean isPublic = home.isPublic();
-
         String publicStatus = isPublic ? "§aPública" : "§cPrivada";
 
         return new ItemBuilder(Material.BLACK_BED)
@@ -21,12 +20,11 @@ public class MenuItemFactory {
                 .setLore(
                         "",
                         "§7Visibilidade: " + publicStatus,
-                        "§7Clique para se teleportar para esta home.",
+                        "§7Clique para se teleportar até esta home.",
                         "",
-                        "§7Clique com Shift e botão esquerdo para deletar a home.",
+                        "§7Segure Shift e clique com o botão esquerdo para excluir a home.",
                         "",
-                        "§7Caso clique com botão direito sem segurar Shift,",
-                        "§7a home será tornada pública.")
+                        "§7Clique com o botão direito para tornar a home pública.")
                 .build();
     }
 
@@ -44,7 +42,7 @@ public class MenuItemFactory {
     public static ItemStack createPublicHomeItem(Home home) {
         return new ItemBuilder(Material.OAK_DOOR)
                 .setName("§aHome Pública: " + home.getHomeName())
-                .setLore("§7Proprietário: " + home.getPlayerName(), "§7Clique para se teleportar para esta home.")
+                .setLore("§7Proprietário: " + home.getPlayerName(), "§7Clique para se teleportar até esta home.")
                 .build();
     }
 
@@ -62,9 +60,8 @@ public class MenuItemFactory {
                         "§7Clique para obter informações sobre como",
                         "§7definir uma home como pública.",
                         "",
-                        "§aResumo de como tornar pública:",
-                        "§7Para tornar uma home pública,",
-                        "§7clique com o botão direito.",
+                        "§aResumo para tornar pública:",
+                        "§7Clique com o botão direito.",
                         "§7Isso a tornará visível para outros jogadores.")
                 .build();
     }

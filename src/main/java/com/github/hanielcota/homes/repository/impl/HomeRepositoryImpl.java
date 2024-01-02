@@ -23,6 +23,10 @@ public class HomeRepositoryImpl implements HomeRepository {
     private final Cache<String, List<Home>> allHomesCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
+    private final Cache<String, List<Home>> publicHomesCache =
+            Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
+
+
     @Override
     public void saveHome(Home home) {
         final String query =
@@ -124,14 +128,15 @@ public class HomeRepositoryImpl implements HomeRepository {
         List<Home> cachedHomes = allHomesCache.getIfPresent(cacheKey);
         if (cachedHomes != null) {
             log.info("Retrieved homes from cache: {}", cachedHomes);
-            return new ArrayList<>(cachedHomes);
+            return cachedHomes;
         }
 
         List<Home> homes = getAllHomesFromDatabase(playerName);
 
-        allHomesCache.put(cacheKey, new ArrayList<>(homes));
-        return new ArrayList<>(homes);
+        allHomesCache.put(cacheKey, homes);
+        return homes;
     }
+
 
     private List<Home> getAllHomesFromDatabase(String playerName) {
         List<Home> homes = new ArrayList<>();
@@ -171,16 +176,16 @@ public class HomeRepositoryImpl implements HomeRepository {
     @Override
     public List<Home> getPublicHomes(String playerName) {
         String cacheKey = buildCacheKey(playerName, "public");
-        List<Home> cachedPublicHomes = allHomesCache.getIfPresent(cacheKey);
+        List<Home> cachedPublicHomes = publicHomesCache.getIfPresent(cacheKey);
         if (cachedPublicHomes != null) {
             log.info("Retrieved public homes from cache: {}", cachedPublicHomes);
-            return new ArrayList<>(cachedPublicHomes);
+            return cachedPublicHomes;
         }
 
         List<Home> publicHomes = getPublicHomesFromDatabase(playerName);
 
-        allHomesCache.put(cacheKey, new ArrayList<>(publicHomes));
-        return new ArrayList<>(publicHomes);
+        publicHomesCache.put(cacheKey, publicHomes);
+        return publicHomes;
     }
 
     private List<Home> getPublicHomesFromDatabase(String playerName) {

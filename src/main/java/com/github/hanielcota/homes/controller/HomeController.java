@@ -65,7 +65,12 @@ public class HomeController {
         }
 
         Location homeLocation = new Location(
-                bukkitWorld, home.getX(), home.getY(), home.getZ(), (float) home.getYaw(), (float) home.getPitch());
+                bukkitWorld,
+                home.getX(),
+                home.getY(),
+                home.getZ(), (float)
+                home.getYaw(), (float)
+                home.getPitch());
 
         player.teleportAsync(homeLocation);
     }
