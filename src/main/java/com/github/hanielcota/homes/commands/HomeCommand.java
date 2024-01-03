@@ -2,15 +2,12 @@ package com.github.hanielcota.homes.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Default;
 import com.github.hanielcota.homes.controller.HomeController;
 import com.github.hanielcota.homes.domain.Home;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @CommandAlias("home")
 @AllArgsConstructor
@@ -41,10 +38,4 @@ public class HomeCommand extends BaseCommand {
         player.sendMessage("§aTeleportado para a home com sucesso!");
     }
 
-    @CommandCompletion("@playerHomes")
-    public List<String> onTabComplete(Player player, String[] args) {
-        return homeController.getAllHomes(player.getName()).stream()
-                .map(Home::getHomeName)
-                .collect(Collectors.toList());
-    }
 }

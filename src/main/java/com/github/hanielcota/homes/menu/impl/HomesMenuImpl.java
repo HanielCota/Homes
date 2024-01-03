@@ -34,7 +34,6 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
         fillEmptySlotsWithBarrier(19, 25);
         fillEmptySlotsWithBarrier(28, 34);
 
-        setItem(50, MenuItemFactory.createPublicHomesItem(), click -> showPublicHomes(player));
         setItem(45, MenuItemFactory.createBackItem(false), click -> player.closeInventory());
         setItem(49, MenuItemFactory.createOrderItem(), click -> organizeHomesAZ(player));
 
@@ -43,11 +42,6 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
 
     private void setItem(int slot, Player player, Home home) {
         setItem(slot, MenuItemFactory.createHomeItem(home), click -> {
-            if (click.isRightClick()) {
-                handlePublicVisibilityChange(player, home);
-                return;
-            }
-
             if (click.isShiftClick()) {
                 handleHomeDeletion(player, home, slot);
                 return;
@@ -57,24 +51,12 @@ public class HomesMenuImpl extends FastInv implements HomeMenu {
         });
     }
 
-    private void handlePublicVisibilityChange(Player player, Home home) {
-        boolean newVisibility = !home.isPublic();
-        plugin.getHomeController().setHomeVisibility(player.getName(), home.getHomeName(), newVisibility);
-        player.sendMessage(
-                "§aHome '" + home.getHomeName() + "' agora é " + (newVisibility ? "pública" : "privada") + ".");
-        showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
-    }
-
     private void handleHomeDeletion(Player player, Home home, int slot) {
         plugin.getHomeController().deleteHome(player.getName(), home.getHomeName());
         player.sendMessage("§cHome '" + home.getHomeName() + "' deletada.");
         getInventory().clear(slot);
-        showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
-    }
 
-    private void showPublicHomes(Player player) {
-        List<Home> publicHomes = plugin.getHomeController().getPublicHomes(player.getName());
-        new PublicHomesMenuImpl(player, publicHomes, plugin).open(player);
+        showHomesMenu(player, plugin.getHomeRepository().getAllHomes(player.getName()));
     }
 
     private void organizeHomesAZ(Player player) {

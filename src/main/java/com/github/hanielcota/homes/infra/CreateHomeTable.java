@@ -29,8 +29,7 @@ public class CreateHomeTable {
                     + "y DOUBLE NOT NULL,"
                     + "z DOUBLE NOT NULL,"
                     + "yaw DOUBLE NOT NULL,"
-                    + "pitch DOUBLE NOT NULL,"
-                    + "isPublic BOOLEAN NOT NULL DEFAULT FALSE"
+                    + "pitch DOUBLE NOT NULL"
                     + ")";
 
             statement.executeUpdate(createTableSQL);

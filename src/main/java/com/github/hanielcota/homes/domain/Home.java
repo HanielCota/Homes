@@ -17,5 +17,4 @@ public class Home {
     private double z;
     private double yaw;
     private double pitch;
-    private boolean isPublic;
 }

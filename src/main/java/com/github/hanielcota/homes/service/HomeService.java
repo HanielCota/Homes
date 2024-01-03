@@ -19,9 +19,8 @@ public class HomeService {
             double y,
             double z,
             double yaw,
-            double pitch,
-            boolean isPublic) {
-        Home home = new Home(playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic);
+            double pitch) {
+        Home home = new Home(playerName, homeName, worldName, x, y, z, yaw, pitch);
         homeRepository.saveHome(home);
     }
 
@@ -39,13 +38,5 @@ public class HomeService {
 
     public boolean isHomeNameTaken(String playerName, String homeName) {
         return homeRepository.isHomeNameTaken(playerName, homeName);
-    }
-
-    public List<Home> getPublicHomes(String playerName) {
-        return homeRepository.getPublicHomes(playerName);
-    }
-
-    public void setHomeVisibility(String playerName, String homeName, boolean isPublic) {
-        homeRepository.setHomeVisibility(playerName, homeName, isPublic);
     }
 }

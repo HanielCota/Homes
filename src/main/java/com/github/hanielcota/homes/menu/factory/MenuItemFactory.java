@@ -12,19 +12,13 @@ public class MenuItemFactory {
 
     public static ItemStack createHomeItem(Home home) {
         String homeName = home.getHomeName();
-        boolean isPublic = home.isPublic();
-        String publicStatus = isPublic ? "§aPública" : "§cPrivada";
 
         return new ItemBuilder(Material.BLACK_BED)
                 .setName("§a" + homeName)
-                .setLore(
+                .setLore("§7Clique para se teleportar até esta home.",
                         "",
-                        "§7Visibilidade: " + publicStatus,
-                        "§7Clique para se teleportar até esta home.",
-                        "",
-                        "§7Segure Shift e clique com o botão esquerdo para excluir a home.",
-                        "",
-                        "§7Clique com o botão direito para tornar a home pública.")
+                        "§7Segure 'Shift' e clique com o botão esquerdo",
+                        "§7para excluir esta home.")
                 .build();
     }
 
@@ -36,33 +30,6 @@ public class MenuItemFactory {
         return new ItemBuilder(Material.HOPPER)
                 .setName("§aOrganizar")
                 .setLore("§7Clique para organizar alfabeticamente", "§7os nomes das homes de A a Z.")
-                .build();
-    }
-
-    public static ItemStack createPublicHomeItem(Home home) {
-        return new ItemBuilder(Material.OAK_DOOR)
-                .setName("§aHome Pública: " + home.getHomeName())
-                .setLore("§7Proprietário: " + home.getPlayerName(), "§7Clique para se teleportar até esta home.")
-                .build();
-    }
-
-    public static ItemStack createPublicHomesItem() {
-        return new ItemBuilder(Material.ENDER_EYE)
-                .setName("§aHomes Públicas")
-                .setLore("§7Clique para visualizar", "§7as homes públicas.")
-                .build();
-    }
-
-    public static ItemStack createInformationPublicItem() {
-        return new ItemBuilder(Material.BOOK)
-                .setName("§aDefinir Home Pública")
-                .setLore(
-                        "§7Clique para obter informações sobre como",
-                        "§7definir uma home como pública.",
-                        "",
-                        "§aResumo para tornar pública:",
-                        "§7Clique com o botão direito.",
-                        "§7Isso a tornará visível para outros jogadores.")
                 .build();
     }
 

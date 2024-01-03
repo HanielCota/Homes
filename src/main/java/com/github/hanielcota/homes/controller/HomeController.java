@@ -23,9 +23,9 @@ public class HomeController {
             double y,
             double z,
             double yaw,
-            double pitch,
-            boolean isPublic) {
-        homeService.createHome(playerName, homeName, worldName, x, y, z, yaw, pitch, isPublic);
+            double pitch) {
+
+        homeService.createHome(playerName, homeName, worldName, x, y, z, yaw, pitch);
     }
 
     public Home getHome(String playerName, String homeName) {
@@ -40,13 +40,6 @@ public class HomeController {
         homeService.deleteHome(playerName, homeName);
     }
 
-    public List<Home> getPublicHomes(String playerName) {
-        return homeService.getPublicHomes(playerName);
-    }
-
-    public void setHomeVisibility(String playerName, String homeName, boolean isPublic) {
-        homeService.setHomeVisibility(playerName, homeName, isPublic);
-    }
 
     public boolean isHomeNameTaken(String playerName, String homeName) {
         return homeService.isHomeNameTaken(playerName, homeName);
