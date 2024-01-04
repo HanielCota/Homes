@@ -22,10 +22,11 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void saveHome(Home home) {
-        final String query = "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String query =
+                "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = HikariCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, home.getPlayerName());
             preparedStatement.setString(2, home.getHomeName());
@@ -39,7 +40,6 @@ public class HomeRepositoryImpl implements HomeRepository {
             preparedStatement.addBatch();
             preparedStatement.executeBatch();
 
-            log.info("Home saved successfully: {}", home);
             homeCacheManager.invalidateCaches(home.getPlayerName(), home.getHomeName());
 
         } catch (SQLException e) {
@@ -52,21 +52,19 @@ public class HomeRepositoryImpl implements HomeRepository {
         Home cachedHome = homeCacheManager.getHomeFromCache(playerName, homeName);
 
         if (cachedHome != null) {
-            log.info("Retrieved home from cache: {}", cachedHome);
             return cachedHome;
         }
 
         final String query =
                 "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch FROM homes WHERE playerName = ? AND homeName = ?";
         try (Connection connection = HikariCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, playerName);
             preparedStatement.setString(2, homeName);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {
-                    log.info("Home not found for playerName: {} and homeName: {}", playerName, homeName);
                     return null;
                 }
 
@@ -80,7 +78,6 @@ public class HomeRepositoryImpl implements HomeRepository {
                         resultSet.getDouble("yaw"),
                         resultSet.getDouble("pitch"));
 
-                log.info("Retrieved home from database: {}", home);
                 homeCacheManager.updateHomeCache(playerName, homeName, home);
                 return home;
             }
@@ -96,13 +93,12 @@ public class HomeRepositoryImpl implements HomeRepository {
         Boolean cachedIsTaken = homeCacheManager.isHomeNameTakenCache(playerName, homeName);
 
         if (cachedIsTaken != null) {
-            log.info("Retrieved isHomeNameTaken from cache: {}", cachedIsTaken);
             return cachedIsTaken;
         }
 
         final String query = "SELECT 1 FROM homes WHERE playerName = ? AND homeName = ? LIMIT 1";
         try (Connection connection = HikariCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, playerName);
             preparedStatement.setString(2, homeName);
@@ -114,7 +110,11 @@ public class HomeRepositoryImpl implements HomeRepository {
             }
 
         } catch (SQLException e) {
-            log.error("Error checking if home name is taken for playerName: {} and homeName: {}", playerName, homeName, e);
+            log.error(
+                    "Error checking if home name is taken for playerName: {} and homeName: {}",
+                    playerName,
+                    homeName,
+                    e);
             return false;
         }
     }
@@ -124,7 +124,6 @@ public class HomeRepositoryImpl implements HomeRepository {
         List<Home> cachedHomes = homeCacheManager.getAllHomesFromCache(playerName);
 
         if (cachedHomes != null) {
-            log.info("Retrieved homes from cache: {}", cachedHomes);
             return cachedHomes;
         }
 
@@ -139,7 +138,7 @@ public class HomeRepositoryImpl implements HomeRepository {
                 "SELECT playerName, homeName, worldName, x, y, z, yaw, pitch FROM homes WHERE playerName = ?";
 
         try (Connection connection = HikariCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, playerName);
 
@@ -156,7 +155,6 @@ public class HomeRepositoryImpl implements HomeRepository {
                             resultSet.getDouble("pitch"));
 
                     homes.add(home);
-                    log.info("Retrieved home: {}", home);
                 }
             }
 
@@ -173,13 +171,11 @@ public class HomeRepositoryImpl implements HomeRepository {
         homeCacheManager.invalidateCaches(playerName, homeName);
 
         try (Connection connection = HikariCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, playerName);
             preparedStatement.setString(2, homeName);
             preparedStatement.executeUpdate();
-
-            log.info("Home deleted successfully: {} : {}", playerName, homeName);
 
         } catch (SQLException e) {
             log.error("Failed to delete home with playerName: {} and homeName: {}", playerName, homeName, e);

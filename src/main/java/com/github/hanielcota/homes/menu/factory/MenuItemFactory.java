@@ -4,6 +4,7 @@ import com.github.hanielcota.homes.domain.Home;
 import com.github.hanielcota.homes.utils.ItemBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +15,7 @@ public class MenuItemFactory {
         String homeName = home.getHomeName();
 
         return new ItemBuilder(Material.BLACK_BED)
-                .setDisplayName("§a" + homeName)
+                .setDisplayName(Component.text("§a" + homeName))
                 .setLore(
                         "§7Use §eShift + botão direito do mouse",
                         "§7para excluir a home.",
@@ -24,12 +25,14 @@ public class MenuItemFactory {
     }
 
     public static ItemStack createBarrierItem() {
-        return new ItemBuilder(Material.BARRIER).setDisplayName("§cVazio.").build();
+        return new ItemBuilder(Material.BARRIER)
+                .setDisplayName(Component.text("§cVazio."))
+                .build();
     }
 
     public static ItemStack createOrderItem() {
         return new ItemBuilder(Material.HOPPER)
-                .setDisplayName("§aOrganizar")
+                .setDisplayName(Component.text("§aOrganizar"))
                 .setLore("§7Clique para organizar alfabeticamente", "§7os nomes das homes de A a Z.")
                 .build();
     }
@@ -39,7 +42,7 @@ public class MenuItemFactory {
         String loreText = redirect ? "§7Clique para voltar ao menu anterior." : "§7Clique para fechar o menu.";
 
         return new ItemBuilder(Material.SPECTRAL_ARROW)
-                .setDisplayName(itemName)
+                .setDisplayName(Component.text(itemName))
                 .setLore(loreText)
                 .build();
     }

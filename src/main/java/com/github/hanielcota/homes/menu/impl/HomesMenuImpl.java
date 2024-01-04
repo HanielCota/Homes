@@ -23,6 +23,8 @@ public class HomesMenuImpl extends SimplixMenu implements HomeMenu {
 
     @Override
     public void showHomesMenu(Player player, List<Home> homes) {
+        getInventory().clear();
+
         int startingSlot = 10;
 
         for (Home home : homes) {
@@ -46,6 +48,7 @@ public class HomesMenuImpl extends SimplixMenu implements HomeMenu {
 
         open(player);
     }
+
 
     private void setHomeItem(int slot, Player player, Home home) {
         setItem(slot, MenuItemFactory.createHomeItem(home), click -> {
