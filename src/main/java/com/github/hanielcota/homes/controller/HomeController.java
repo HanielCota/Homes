@@ -3,6 +3,7 @@ package com.github.hanielcota.homes.controller;
 import com.github.hanielcota.homes.domain.Home;
 import com.github.hanielcota.homes.service.HomeService;
 import lombok.AllArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -66,5 +67,6 @@ public class HomeController {
                 home.getPitch());
 
         player.teleportAsync(homeLocation);
+        player.sendActionBar(Component.text("§aVocê foi teleportado com sucesso."));
     }
 }

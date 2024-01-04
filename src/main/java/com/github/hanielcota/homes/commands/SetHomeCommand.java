@@ -29,7 +29,7 @@ public class SetHomeCommand extends BaseCommand {
             return;
         }
 
-        if (plugin.getHomeRepository().isHomeNameTaken(player.getName(), homeName)) {
+        if (plugin.getHomeController().isHomeNameTaken(player.getName(), homeName)) {
             player.sendMessage("§cJá existe uma home com o nome '" + homeName + "'. Escolha outro nome.");
             return;
         }
