@@ -6,6 +6,5 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public interface HomeMenu {
-
     void showHomesMenu(Player player, List<Home> homes);
 }

@@ -1,5 +1,9 @@
 package com.github.hanielcota.homes.utils;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,44 +14,36 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class FastInvManager {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class SimplixManager {
 
-    private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);
+    private static final AtomicBoolean isRegistered = new AtomicBoolean(false);
 
-    private FastInvManager() {
-        throw new UnsupportedOperationException();
-    }
-
-    public static void register(Plugin plugin) {
-        Objects.requireNonNull(plugin, "plugin");
-
-        if (REGISTERED.getAndSet(true)) {
-            throw new IllegalStateException("FastInv is already registered by plugin: " + plugin.getName());
+    public static void registerPlugin(@NonNull Plugin plugin) {
+        if (isRegistered.getAndSet(true)) {
+            throw new IllegalStateException("SimplixManager is already registered by plugin: " + plugin.getName());
         }
 
-        Bukkit.getPluginManager().registerEvents(new InventoryListener(plugin), plugin);
+        Bukkit.getPluginManager().registerEvents(new SimplixInventoryListener(plugin), plugin);
     }
 
-    public static void closeAll() {
+    public static void closeAllInventories() {
         Bukkit.getOnlinePlayers().stream()
-                .filter(p -> p.getOpenInventory().getTopInventory().getHolder() instanceof FastInv)
+                .filter(player -> player.getOpenInventory().getTopInventory().getHolder() instanceof SimplixMenu)
                 .forEach(Player::closeInventory);
     }
 
-    public static final class InventoryListener implements Listener {
+    @AllArgsConstructor
+    public static final class SimplixInventoryListener implements Listener {
 
         private final Plugin plugin;
 
-        public InventoryListener(Plugin plugin) {
-            this.plugin = plugin;
-        }
-
         @EventHandler
         public void onInventoryClick(InventoryClickEvent event) {
-            if (event.getClickedInventory() == null || !(event.getClickedInventory().getHolder() instanceof FastInv inventory)) {
+            if (event.getClickedInventory() == null
+                    || !(event.getClickedInventory().getHolder() instanceof SimplixMenu inventory)) {
                 return;
             }
 
@@ -61,11 +57,9 @@ public final class FastInvManager {
             }
         }
 
-
-
         @EventHandler
         public void onInventoryOpen(InventoryOpenEvent e) {
-            if (!(e.getInventory().getHolder() instanceof FastInv inv)) {
+            if (!(e.getInventory().getHolder() instanceof SimplixMenu inv)) {
                 return;
             }
 
@@ -74,7 +68,7 @@ public final class FastInvManager {
 
         @EventHandler
         public void onInventoryClose(InventoryCloseEvent e) {
-            if (!(e.getInventory().getHolder() instanceof FastInv inv)) {
+            if (!(e.getInventory().getHolder() instanceof SimplixMenu inv)) {
                 return;
             }
 
@@ -89,8 +83,8 @@ public final class FastInvManager {
                 return;
             }
 
-            closeAll();
-            REGISTERED.set(false);
+            closeAllInventories();
+            isRegistered.set(false);
         }
     }
 }

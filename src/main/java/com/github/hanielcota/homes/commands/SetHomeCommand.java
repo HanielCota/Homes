@@ -22,8 +22,9 @@ public class SetHomeCommand extends BaseCommand {
             return;
         }
 
-        String homeName = args[0];
-        if (homeName == null || homeName.isEmpty()) {
+        String homeName = args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
+
+        if (homeName.isEmpty()) {
             player.sendMessage("§cNome da home inválido(a).");
             return;
         }
@@ -32,8 +33,6 @@ public class SetHomeCommand extends BaseCommand {
             player.sendMessage("§cJá existe uma home com o nome '" + homeName + "'. Escolha outro nome.");
             return;
         }
-
-        homeName = homeName.substring(0, 1).toUpperCase() + homeName.substring(1);
 
         String worldName = player.getWorld().getName();
         double x = player.getLocation().getX();

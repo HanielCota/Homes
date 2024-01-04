@@ -22,8 +22,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
     @Override
     public void saveHome(Home home) {
-        final String query =
-                "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String query = "INSERT INTO homes (playerName, homeName, worldName, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = HikariCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -116,7 +115,7 @@ public class HomeRepositoryImpl implements HomeRepository {
 
         } catch (SQLException e) {
             log.error("Error checking if home name is taken for playerName: {} and homeName: {}", playerName, homeName, e);
-            return true;
+            return false;
         }
     }
 

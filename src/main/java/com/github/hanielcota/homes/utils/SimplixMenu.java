@@ -13,13 +13,16 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-public class FastInv implements InventoryHolder {
+public class SimplixMenu implements InventoryHolder {
 
     private final Map<Integer, Consumer<InventoryClickEvent>> itemHandlers = new HashMap<>();
     private final List<Consumer<InventoryOpenEvent>> openHandlers = new ArrayList<>();
@@ -31,28 +34,48 @@ public class FastInv implements InventoryHolder {
     @Setter
     private Predicate<Player> closeFilter;
 
-    public FastInv(int size) {
-        this(owner -> Bukkit.createInventory(owner, size));
+    public SimplixMenu(int size) {
+        this(owner -> createInventory(owner, size));
     }
 
-    public FastInv(int size, String title) {
-        this(owner -> Bukkit.createInventory(owner, size, title));
+    public SimplixMenu(int size, String title) {
+        this(owner -> createInventory(owner, size, title));
     }
 
-    public FastInv(InventoryType type) {
-        this(owner -> Bukkit.createInventory(owner, type));
+    public SimplixMenu(InventoryType type) {
+        this(owner -> createInventory(owner, type));
     }
 
-    public FastInv(InventoryType type, String title) {
-        this(owner -> Bukkit.createInventory(owner, type, title));
+    public SimplixMenu(InventoryType type, String title) {
+        this(owner -> createInventory(owner, type, title));
     }
 
-    public FastInv(Function<InventoryHolder, Inventory> inventoryFunction) {
-        Objects.requireNonNull(inventoryFunction, "inventoryFunction");
+    private static Inventory createInventory(InventoryHolder owner, int size) {
+        return Bukkit.createInventory(owner, size);
+    }
+
+    private static Inventory createInventory(InventoryHolder owner, int size, String title) {
+        return Bukkit.createInventory(owner, size, title);
+    }
+
+    private static Inventory createInventory(InventoryHolder owner, InventoryType type) {
+        return Bukkit.createInventory(owner, type);
+    }
+
+    private static Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
+        return Bukkit.createInventory(owner, type, title);
+    }
+
+    public SimplixMenu(Function<InventoryHolder, Inventory> inventoryFunction) {
+        if (inventoryFunction == null) {
+            throw new IllegalArgumentException("inventoryFunction cannot be null");
+        }
         Inventory inv = inventoryFunction.apply(this);
 
-        if (inv.getHolder() != this)
-            throw new IllegalStateException("Inventory holder is not FastInv, found: " + inv.getHolder());
+        if (inv == null || inv.getHolder() != this) {
+            throw new IllegalStateException(
+                    "Inventory holder is not FastInv, found: " + (inv != null ? inv.getHolder() : "null"));
+        }
 
         inventory = inv;
     }
@@ -69,7 +92,9 @@ public class FastInv implements InventoryHolder {
 
     public void addItem(ItemStack item, Consumer<InventoryClickEvent> handler) {
         int slot = inventory.firstEmpty();
-        if (slot < 0) return;
+        if (slot < 0) {
+            return;
+        }
         setItem(slot, item, handler);
     }
 
@@ -93,7 +118,9 @@ public class FastInv implements InventoryHolder {
     }
 
     public void setItems(int slotFrom, int slotTo, ItemStack item, Consumer<InventoryClickEvent> handler) {
-        for (int i = slotFrom; i <= slotTo; i++) setItem(i, item, handler);
+        for (int i = slotFrom; i <= slotTo; i++) {
+            setItem(i, item, handler);
+        }
     }
 
     public void setItems(int[] slots, ItemStack item) {
@@ -101,7 +128,9 @@ public class FastInv implements InventoryHolder {
     }
 
     public void setItems(int[] slots, ItemStack item, Consumer<InventoryClickEvent> handler) {
-        for (int slot : slots) setItem(slot, item, handler);
+        for (int slot : slots) {
+            setItem(slot, item, handler);
+        }
     }
 
     public void removeItem(int slot) {
@@ -110,22 +139,36 @@ public class FastInv implements InventoryHolder {
     }
 
     public void removeItems(int... slots) {
-        for (int slot : slots) removeItem(slot);
+        for (int slot : slots) {
+            removeItem(slot);
+        }
     }
 
     public void addOpenHandler(Consumer<InventoryOpenEvent> openHandler) {
+        if (openHandler == null) {
+            return;
+        }
         openHandlers.add(openHandler);
     }
 
     public void addCloseHandler(Consumer<InventoryCloseEvent> closeHandler) {
+        if (closeHandler == null) {
+            return;
+        }
         closeHandlers.add(closeHandler);
     }
 
     public void addClickHandler(Consumer<InventoryClickEvent> clickHandler) {
+        if (clickHandler == null) {
+            return;
+        }
         clickHandlers.add(clickHandler);
     }
 
     public void open(Player player) {
+        if (player == null) {
+            return;
+        }
         player.openInventory(inventory);
     }
 
@@ -149,8 +192,11 @@ public class FastInv implements InventoryHolder {
     }
 
     public void fillEmptySlotsWithBarrier(int startSlot, int endSlot) {
-        for (int emptySlot = startSlot; emptySlot <= endSlot; emptySlot++)
-            if (getInventory().getItem(emptySlot) == null) setItem(emptySlot, MenuItemFactory.createBarrierItem());
+        for (int emptySlot = startSlot; emptySlot <= endSlot; emptySlot++) {
+            if (getInventory().getItem(emptySlot) == null) {
+                setItem(emptySlot, MenuItemFactory.createBarrierItem());
+            }
+        }
     }
 
     @Override
@@ -176,6 +222,8 @@ public class FastInv implements InventoryHolder {
 
         Consumer<InventoryClickEvent> clickConsumer = itemHandlers.get(e.getRawSlot());
 
-        if (clickConsumer != null) clickConsumer.accept(e);
+        if (clickConsumer != null) {
+            clickConsumer.accept(e);
+        }
     }
 }

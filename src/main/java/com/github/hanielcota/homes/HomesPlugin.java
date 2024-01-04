@@ -11,7 +11,7 @@ import com.github.hanielcota.homes.repository.HomeRepository;
 import com.github.hanielcota.homes.repository.cache.HomeCacheManager;
 import com.github.hanielcota.homes.repository.impl.HomeRepositoryImpl;
 import com.github.hanielcota.homes.service.HomeService;
-import com.github.hanielcota.homes.utils.FastInvManager;
+import com.github.hanielcota.homes.utils.SimplixManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,7 +42,7 @@ public final class HomesPlugin extends JavaPlugin {
         homeService = new HomeService(homeRepository);
         homeController = new HomeController(homeService);
 
-        FastInvManager.register(this);
+        SimplixManager.registerPlugin(this);
     }
 
     private void setupCommands() {

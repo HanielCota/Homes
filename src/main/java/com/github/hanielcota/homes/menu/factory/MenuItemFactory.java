@@ -14,10 +14,9 @@ public class MenuItemFactory {
         String homeName = home.getHomeName();
 
         return new ItemBuilder(Material.BLACK_BED)
-                .setName("§a" + homeName)
+                .setDisplayName("§a" + homeName)
                 .setLore(
-                        "",
-                        "§7Use §eShift + botão direito do mouse.",
+                        "§7Use §eShift + botão direito do mouse",
                         "§7para excluir a home.",
                         "",
                         "§aClique para teleportar até " + home.getHomeName() + ".")
@@ -25,12 +24,12 @@ public class MenuItemFactory {
     }
 
     public static ItemStack createBarrierItem() {
-        return new ItemBuilder(Material.BARRIER).setName("§cVazio.").build();
+        return new ItemBuilder(Material.BARRIER).setDisplayName("§cVazio.").build();
     }
 
     public static ItemStack createOrderItem() {
         return new ItemBuilder(Material.HOPPER)
-                .setName("§aOrganizar")
+                .setDisplayName("§aOrganizar")
                 .setLore("§7Clique para organizar alfabeticamente", "§7os nomes das homes de A a Z.")
                 .build();
     }
@@ -40,7 +39,7 @@ public class MenuItemFactory {
         String loreText = redirect ? "§7Clique para voltar ao menu anterior." : "§7Clique para fechar o menu.";
 
         return new ItemBuilder(Material.SPECTRAL_ARROW)
-                .setName(itemName)
+                .setDisplayName(itemName)
                 .setLore(loreText)
                 .build();
     }
