@@ -8,7 +8,6 @@ import com.github.hanielcota.homes.domain.Home;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 
-
 @CommandAlias("home")
 @AllArgsConstructor
 public class HomeCommand extends BaseCommand {
@@ -37,5 +36,4 @@ public class HomeCommand extends BaseCommand {
         homeController.teleportToHome(player, home);
         player.sendMessage("§aTeleportado para a home com sucesso!");
     }
-
 }

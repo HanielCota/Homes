@@ -3,6 +3,7 @@ package com.github.hanielcota.homes.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import com.github.hanielcota.homes.HomesPlugin;
 import com.github.hanielcota.homes.controller.HomeController;
 import com.github.hanielcota.homes.domain.Home;
 import com.github.hanielcota.homes.menu.impl.HomesMenuImpl;
@@ -16,7 +17,7 @@ import java.util.List;
 public class HomesCommand extends BaseCommand {
 
     private final HomeController homeController;
-    private final HomesMenuImpl homesMenu;
+    private final HomesPlugin plugin;
 
     @Default
     public void onCommand(Player player) {
@@ -27,6 +28,6 @@ public class HomesCommand extends BaseCommand {
             return;
         }
 
-        homesMenu.showHomesMenu(player, homes);
+        new HomesMenuImpl(plugin).showHomesMenu(player, homes);
     }
 }

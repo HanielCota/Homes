@@ -15,10 +15,12 @@ public class MenuItemFactory {
 
         return new ItemBuilder(Material.BLACK_BED)
                 .setName("§a" + homeName)
-                .setLore("§7Clique para se teleportar até esta home.",
+                .setLore(
                         "",
-                        "§7Segure 'Shift' e clique com o botão esquerdo",
-                        "§7para excluir esta home.")
+                        "§7Use §eShift + botão direito do mouse.",
+                        "§7para excluir a home.",
+                        "",
+                        "§aClique para teleportar até " + home.getHomeName() + ".")
                 .build();
     }
 
